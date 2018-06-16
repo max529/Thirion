@@ -1,0 +1,133 @@
+<div id="project">
+    <div class="row">
+        <div class="col s3">
+            <ul class="collection" id="listAction">
+                <li class="collection-item active" ng-click="selectTab($event,'info')">Info global</li>
+                <li class="collection-item" ng-class="{disabled : !info.scss}" ng-click="selectTab($event,'info')">Scss</li>
+                <li class="collection-item" ng-class="{disabled : !info.materialize}" ng-click="selectTab($event,'info')">Materialize</li>
+                <li class="collection-item" ng-class="{disabled : !info.angular}" ng-click="selectTab($event,'info')">Angular</li>
+                <li class="collection-item" ng-class="{disabled : !info.php}" ng-click="selectTab($event,'php')">Php</li>
+                <li class="collection-item" ng-class="{disabled : !info.api}" ng-click="selectTab($event,'api')">API</li>
+            </ul>
+        </div>
+        <div class="col s9 page" id="contentInfo" ng-if="page=='info'">
+            <h3>Info global</h3>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="nom" type="text" value="{{info.name}}" disabled="disabled">
+                    <label for="nom">Nom</label>
+                </div>
+            </div>
+            <div class="row">
+                <p>
+                    <label for="scss">
+                        <input type="checkbox" id="scss" ng-model="info.scss" disabled="disabled" />
+                        <span>Scss</span>
+                    </label>
+                </p>
+                <p>
+                    <label for="materialize">
+                        <input type="checkbox" id="materialize" ng-model="info.materialize" disabled="disabled" />
+                        <span>Materialize</span>
+                    </label>
+                </p>
+                <p>
+                    <label for="angular">
+                        <input type="checkbox" id="angular" ng-model="info.angular" disabled="disabled" />
+                        <span>Angular</span>
+                    </label>
+                </p>
+                <p>
+                    <label for="php">
+                        <input type="checkbox" id="php" ng-model="info.php" disabled="disabled" />
+                        <span>Php</span>
+                    </label>
+                </p>
+                <p>
+                    <label for="api">
+                        <input type="checkbox" id="api" ng-model="info.api" disabled="disabled" />
+                        <span>API</span>
+                    </label>
+                </p>
+            </div>
+        </div>
+        <div id="phpPage" class="col s9 page" ng-if="page=='php'">
+            <h3>
+                <span>PHP editor</span>
+                <a class="btn right" ng-click="createObjectPhp()">créer</a>
+            </h3>
+            <div id="objectCont">
+                <div class="object" posinarray="{{$index}}" ng-repeat="obj in phpObject" data-x="{{obj.posx}}" data-y="{{obj.posy}}" style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}"
+                    ng-dblclick="infoModal($index)" ng-class="{create : obj.action=='create',update:obj.action=='update',delete:obj.action=='delete'}">
+                    <div class="title">{{obj.name}}</div>
+                    <div class="propCont">
+                        <div class="prop" ng-repeat="ps in obj.prop" ng-class="{primary : ps[2]}">{{ps[0]}} : {{ps[1]}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="APIPage" class="col s9 page" ng-if="page=='api'">
+            <h3>
+                <span>API configuration</span>
+            </h3>
+            <div id="apiCont" class="col s12">
+                <div class="input-field col s6">
+                    <select ng-model="apiInfo.obj" ng-options="obj.name  for  obj in phpObject" ng-change="updateAPI()">
+
+                    </select>
+                    <label>Classe d'authentification</label>
+                </div>
+                <div class="input-field col s6">
+                    <select ng-model="apiInfo.propName" ng-options="prop[0]  for  prop in apiInfo.obj.prop">
+
+                    </select>
+                    <label>Propriété d'authentification</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="infoObject" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>
+            <input ng-model="objectSelectPhp.name" class="titleObj">
+            <a class="btn right" ng-click="addProp()">ajouter</a>
+        </h4>
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th class="action">primary</th>
+                <th class="action">Action</th>
+            </tr>
+            <tr ng-repeat="ps in objectSelectPhp.prop">
+                <td class="col s3">
+                    <input type="text" ng-model="objectSelectPhp.prop[$index][0]" />
+                </td>
+                <td class="input-field col s3">
+                    <select ng-model="objectSelectPhp.prop[$index][1]">
+                        <option>int</option>
+                        <option>double</option>
+                        <option>varchar255</option>
+                        <option>text</option>
+                        <option>dateTime</option>
+                    </select>
+                </td>
+                <td class="col s3 action">
+                    <input type="checkbox" id="{{'prim'+$index}}" ng-model="objectSelectPhp.prop[$index][2]" />
+                    <label for="{{'prim'+$index}}">Primary</label>
+                </td>
+                <td class="col s3 action">
+                    <a class="delete" ng-click="removeProp($index)">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-light white-text btn-flat left red" ng-click="suppObject()">Supprimer</a>
+        <a class="modal-action modal-close waves-effect waves-red btn-flat">Annuler</a>
+        <a class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="validateObject()">Valider</a>
+    </div>
+</div>

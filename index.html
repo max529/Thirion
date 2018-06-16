@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="libs/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <script type="text/javascript" src="libs/js/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/js/materialize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.6.4/angular-route.min.js"></script>
+    <script type="text/javascript" src="libs/js/interact.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script>
+    var projectPath = "";
+    var socket = io.connect();
+    </script>
+</head>
+
+<body ng-app="projectManager">
+    <nav ng-controller="navCtrl" id="nav" ng-init="init()">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Logo</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li ng-if="validate==1" ng-click="validateClick()">
+                    <a>
+                        <i class="material-icons">done</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div ng-view id="view"></div>
+    <div id="loader">
+        <div class="spinner">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+    </div>
+    <script src="/jsClient/main.js"></script>
+    <script src="/jsClient/ctrl/homeCtrl.js"></script>
+    <script src="/jsClient/ctrl/createCtrl.js"></script>
+    <script src="/jsClient/ctrl/projectCtrl.js"></script>
+    <script src="/jsClient/ctrl/navCtrl.js"></script>
+</body>
+
+</html>

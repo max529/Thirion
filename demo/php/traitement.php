@@ -1,0 +1,1 @@
+//fichier central des transitions

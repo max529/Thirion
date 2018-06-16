@@ -1,0 +1,19 @@
+{
+  "name": "framwork",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "scss": "node-sass scss -o css --output-style compressed"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "getos": "^3.0.1",
+    "glob": "^7.1.1",
+    "opn": "^5.1.0",
+    "socket.io": "^2.0.3",
+    "unzip": "^0.1.11"
+  }
+}

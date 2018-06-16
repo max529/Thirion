@@ -1,0 +1,104 @@
+#project {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    position: relative;
+    .collection {
+        margin: 0;
+        .collection-item {
+            transition: all 0.8s;
+        }
+        .collection-item:last-child {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .disabled {
+            background-color: rgba(0, 0, 0, 0.26);
+            color: #9B9B9B;
+        }
+        .collection-item:not(.disabled):hover {
+            background-color: #26a69a;
+            color: #eafaf9;
+        }
+    }
+    #contentInfo {
+        padding: 10px 30px;
+        h3 {
+            text-align: center;
+        }
+    }
+    #phpPage {
+        padding: 10px 30px;
+        height: 100%;
+        h3 {
+            text-align: center;
+            height: 50px;
+        }
+        #objectCont {
+            height: calc(100% - 80px);
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            position: relative;
+            .object {
+                border: 1px solid #9D9D9D;
+                display: inline-block;
+                background-color: #FFF;
+                position: absolute;
+                .title {
+                    border-bottom: 1px solid #9D9D9D;
+                    padding: 3px 10px;
+                }
+                .propCont {
+                    .prop {
+                        padding: 3px 10px;
+                    }
+                    .primary {
+                        background-color: rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
+            .create{
+                border:1px solid #09F60F;
+                .title {
+                    border-bottom: 1px solid #09F60F;
+                }
+            }
+            .update {
+                border:1px solid #77D7FF;
+                .title {
+                    border-bottom: 1px solid #77D7FF;
+                }
+            }
+            .delete{
+                display: none;
+            }
+        }
+    }
+}
+
+#infoObject {
+    .titleObj{
+        display: inline-block;
+        width: auto;
+        border: none!important;
+        margin: 0;
+        font-size: 2.28rem;
+        box-shadow:none;
+    }
+    .delete {
+        color: red;
+    }
+    .modal-content {
+        overflow: auto;
+    }
+    .action {
+        text-align: center;
+    }
+}
+
+#project>.row>.col {
+    padding: 0;
+}
+
+#project>.row {
+    height: 100%;
+}

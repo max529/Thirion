@@ -1,0 +1,58 @@
+<div id="create">
+    <h3>Informations générales</h3>
+    <div class="row">
+        <div class="input-field col s6">
+            <input id="projectName" type="text" class="validate" ng-model="form.name">
+            <label for="projectName">Nom du projet</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <input type="checkbox" id="scss" ng-model="form.scss" />
+            <label for="scss">SCSS</label>
+        </div>
+        <div class="col s12">
+            <label for="materialize">
+                <input type="checkbox" id="materialize" ng-model="form.materialize" />
+                <span>Materialize</span>
+            </label>
+        </div>
+        <div class="col s12">
+            <label for="angular">
+                <input type="checkbox" id="angular" ng-model="form.angular" />
+                <span>Angular</span>
+            </label>
+        </div>
+        <div class="col s12">
+            <label for="php">
+                <input type="checkbox" id="php" ng-model="form.php" />
+                <span>PHP</span>
+            </label>
+        </div>
+        <div class="col s12">
+            <label for="api">
+                <input type="checkbox" id="api" ng-model="form.api" />
+                <span>API</span>
+            </label>
+        </div>
+    </div>
+    <h3>Informations SQL</h3>
+    <div class="row">
+        <div class="input-field col s6">
+            <input id="hostSql" type="text" class="validate" ng-model="form.db.host">
+            <label for="hostSql">Host</label>
+        </div>
+        <div class="input-field col s6">
+            <input id="nameSql" type="text" class="validate" ng-model="form.db.name">
+            <label for="nameSql">Nom de la DB</label>
+        </div>
+        <div class="input-field col s6">
+            <input id="userSql" type="text" class="validate" ng-model="form.db.username">
+            <label for="userSql">User</label>
+        </div>
+        <div class="input-field col s6">
+            <input id="passSql" type="text" class="validate" ng-model="form.db.pass">
+            <label for="passSql">Mot de passe</label>
+        </div>
+    </div>
+</div>

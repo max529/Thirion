@@ -1,0 +1,18 @@
+<div class="col s4" ng-init="init()" id="homeFrame">
+    <h3>
+		<a class="waves-effect waves-light btn red left" ng-if="currentPath!=''" ng-click="goPrevious()">retour</a>
+		<span>choisir un dossier</span>
+		<a class="waves-effect waves-light btn right" ng-click="createProject()">valider</a>
+	</h3>
+    <div id="actualPath">
+        <span>actuellement : {{currentPath}}</span>
+    </div>
+    <div id="content">
+        <div ng-click="askPath('C:\\Users\\maxim\\Desktop\\temp')">
+            C:\Users\maxim\Desktop\temp
+        </div>
+        <div ng-repeat="disk in disks" ng-click="askPath(disk)">
+            {{disk}}
+        </div>
+    </div>
+</div>
