@@ -71,17 +71,39 @@
                 <span>API configuration</span>
             </h3>
             <div id="apiCont" class="col s12">
-                <div class="input-field col s6">
-                    <select ng-model="apiInfo.obj" ng-options="obj.name  for  obj in phpObject" ng-change="updateAPI()">
-
-                    </select>
-                    <label>Classe d'authentification</label>
+                <div class="row">
+                    <label>
+                        <input type="checkbox" ng-model="apiInfo.needAuth" ng-change="updateAuth()"/>
+                        <span>Besoin d'authentification</span>
+                    </label>
                 </div>
-                <div class="input-field col s6">
-                    <select ng-model="apiInfo.propName" ng-options="prop[0]  for  prop in apiInfo.obj.prop">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <select ng-model="apiInfo.obj" ng-options="obj.name  for  obj in phpObject" ng-change="updateAPI()">
 
-                    </select>
-                    <label>Propriété d'authentification</label>
+                        </select>
+                        <label>Classe d'authentification</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <select ng-model="apiInfo.propName" ng-options="prop[0]  for  prop in apiInfo.obj.prop">
+
+                        </select>
+                        <label>Token d'authentification</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <select ng-model="apiInfo.username" ng-options="prop[0]  for  prop in apiInfo.obj.prop">
+
+                        </select>
+                        <label>Username d'authentification</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <select ng-model="apiInfo.password" ng-options="prop[0]  for  prop in apiInfo.obj.prop">
+
+                        </select>
+                        <label>Mot de passe d'authentification</label>
+                    </div>
                 </div>
             </div>
         </div>

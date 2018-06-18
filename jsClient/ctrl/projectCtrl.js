@@ -16,7 +16,10 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout) {
     }];
     $scope.apiInfo = {
         obj: "1495114066365",
-        propName: "id"
+        needAuth: true,
+        propName: "id",
+        username: "",
+        password: ""
     }
     $scope.objectSelectPhp = {};
 
@@ -97,8 +100,11 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout) {
                 displayLength: 4000
             });
         } else if ($scope.page == "api") {
-            console.log($scope.apiInfo);
             socket.emit("saveAPI", $scope.apiInfo)
+            M.toast({
+                html: 'API mise à jour',
+                displayLength: 4000
+            });
         }
     }
     $scope.infoModal = function (ind) {
@@ -144,6 +150,17 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout) {
     }
     $scope.updateAPI = function () {
         $timeout(function () {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, {});
+        }, 0);
+    }
+    $scope.updateAuth = function () {
+        $timeout(function () {
+            if (!$scope.apiInfo.needAuth) {
+                jQuery('select').attr("disabled", "disabled")
+            } else {
+                jQuery('select').removeAttr("disabled")
+            }
             var elems = document.querySelectorAll('select');
             var instances = M.FormSelect.init(elems, {});
         }, 0);

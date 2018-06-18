@@ -18,19 +18,8 @@
         
     }
     
-    $User = Load::load('User');
-
-    $isTokenOk = $User->checkToken($_GET['token']);
-    if(!$isTokenOk){
-        echo 'token invalide';
-        return;
-    }
-
-    if($paths[0] == 'User'){
-        $temp = $User;
-    }else{
-        $temp = Load::load($paths[0]);
-    }
+    $temp = Load::load($paths[0]);
+    
     
     $res = "";
     if(count($paths) == 1){
@@ -67,7 +56,5 @@
             $ret[count($ret)] = $_POST[$name];
         }
         return $ret;
-
-
     }
 ?>

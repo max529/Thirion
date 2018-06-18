@@ -1,16 +1,15 @@
-"use strict"
+const fs = require('fs');
 var self = module.exports = {
-    readPhpObject: function(path) {
-        const fs = require('fs');
+    readPhpObject: function (path) {
         const glob = require('glob');
         var pathTemp = path + ".object/";
 
         var res = [];
 
         var files = fs.readdirSync(pathTemp);
-        files.forEach(function(file) {
+        files.forEach(function (file) {
             //console.log(file);
-            var content = JSON.parse(fs.readFileSync(pathTemp+file, 'utf8'));
+            var content = JSON.parse(fs.readFileSync(pathTemp + file, 'utf8'));
             //console.log(content);
 
             res.push(content);
@@ -18,9 +17,7 @@ var self = module.exports = {
         return res;
 
     },
-    parsePhpObject: function(data, path) {
-        const fs = require('fs');
-
+    parsePhpObject: function (data, path) {
         for (var i = 0; i < data.length; i++) {
             var ob = data[i];
             self.createPhpObject(data, path, ob);
@@ -32,8 +29,7 @@ var self = module.exports = {
         }
     },
 
-    createPhpObject: function(data, path, object) {
-        const fs = require('fs');
+    createPhpObject: function (data, path, object) {
         var pathTemp = path + ".object";
         var pathPhp = path + "php";
 
@@ -59,7 +55,7 @@ var self = module.exports = {
         var updateProp = "";
         //idArticle=:id
         var updateWhere = ""
-            //$stat->bindParam(":titre",$titre);
+        //$stat->bindParam(":titre",$titre);
         var updatePrep = "";
 
 
@@ -131,7 +127,7 @@ var self = module.exports = {
         //SELECT * FROM DefaultClassNameLower
         var selectAllSentence = "SELECT * FROM " + classNameLower;
         //SELECT * FROM DefaultClassNameLower WHERE id=:id
-        var selectByIdSentence = "SELECT * FROM "+ classNameLower + " WHERE " +selectByIdWhere
+        var selectByIdSentence = "SELECT * FROM " + classNameLower + " WHERE " + selectByIdWhere
 
         //get default file
         var content = fs.readFileSync(__dirname + '/../defaultPage/default.class.php', "utf8");
@@ -153,9 +149,55 @@ var self = module.exports = {
         content = content.replace(/selectByIdPropPhp/g, selectByIdPropPhp);
         content = content.replace(/selectByIdSentence/g, selectByIdSentence);
         content = content.replace(/selectByIdPrep/g, selectByIdPrep);
-        
+
 
 
         fs.writeFileSync(pathPhp + "/class/" + object.name + ".class.php", content);
+    },
+    parsePhpFile: function (path) {
+        var content = fs.readFileSync(path, "utf8");
+        var content = content.replace("<?php", "").replace("?>", "").trim();
+        content = content.replace(/class [a-zA-z]*{/g, "").trim();
+        content = content.slice(0, content.lastIndexOf("}")).trim();
+        var lignes = content.split("\n");
+        var listFunction = [];
+        var temp = "";
+        var isInFunction = false;
+        for (var i = 0; i < lignes.length; i++) {
+            if (lignes[i].indexOf("function") != -1) {
+                isInFunction = true;
+                temp = lignes[i] + "\n";
+            } else if (isInFunction) {
+                temp += lignes[i] + "\n";
+                if (lignes[i].indexOf("}") != -1) {
+                    var analyse = this._analyseFunction(temp);
+                    listFunction.push(analyse);
+                    temp = "";
+                    isInFunction = false;
+                }
+            }
+        }
+        return listFunction;
+    },
+    _analyseFunction(func) {
+        var info = func.match(/.*function .*{/g)[0];
+        info = info.replace("function ", "").replace("{", "").trim();
+        info = info.split(" ");
+        console.log(info);
+        var params = info[1].match(/\(.*\)/g)[0];
+        info[1] = info[1].replace(params, "");
+        params = params.replace("(", "").replace(")", "");
+        if (params != "") {
+            params = params.split(",");
+        } else {
+            params = []
+        }
+        var res = {
+            type: info[0],
+            name: info[1],
+            params: params,
+            text: func
+        }
+        return res;
     }
 }
