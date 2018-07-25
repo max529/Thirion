@@ -38,11 +38,27 @@
             border: 1px solid #e0e0e0;
             padding: 15px;
             position: relative;
+            overflow: auto;
+            svg{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                line{
+                    cursor: pointer;
+                }
+            }
             .object {
                 border: 1px solid #9D9D9D;
                 display: inline-block;
                 background-color: #FFF;
                 position: absolute;
+                z-index: 50;
+                * {
+                    user-select: none;
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                }
                 .title {
                     border-bottom: 1px solid #9D9D9D;
                     padding: 3px 10px;
@@ -55,20 +71,38 @@
                         background-color: rgba(0, 0, 0, 0.1);
                     }
                 }
+                .connectorLeft {
+                    position: absolute;
+                    left: -5px;
+                    width: 5px;
+                    height: 5px;
+                    background-color: black;
+                    top: calc(50% - 2.5px);
+                    cursor: grab;
+                }
+                .connectorRight {
+                    position: absolute;
+                    right: -5px;
+                    width: 5px;
+                    height: 5px;
+                    background-color: black;
+                    top: calc(50% - 2.5px);
+                    cursor: grab;
+                }
             }
-            .create{
-                border:1px solid #09F60F;
+            .create {
+                border: 1px solid #09F60F;
                 .title {
                     border-bottom: 1px solid #09F60F;
                 }
             }
             .update {
-                border:1px solid #77D7FF;
+                border: 1px solid #77D7FF;
                 .title {
                     border-bottom: 1px solid #77D7FF;
                 }
             }
-            .delete{
+            .delete {
                 display: none;
             }
         }
@@ -76,13 +110,13 @@
 }
 
 #infoObject {
-    .titleObj{
+    .titleObj {
         display: inline-block;
         width: auto;
-        border: none!important;
+        border: none !important;
         margin: 0;
         font-size: 2.28rem;
-        box-shadow:none;
+        box-shadow: none;
     }
     .delete {
         color: red;

@@ -56,13 +56,15 @@
                 <span>PHP editor</span>
                 <a class="btn right" ng-click="createObjectPhp()">créer</a>
             </h3>
-            <div id="objectCont">
-                <div class="object" posinarray="{{$index}}" ng-repeat="obj in phpObject" data-x="{{obj.posx}}" data-y="{{obj.posy}}" style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}"
+            <div id="objectCont" ng-mousemove="moveLine($event)" ng-mouseup="stopLine($event)">
+                <div class="object" id="{{'object'+obj.id}}" posinarray="{{$index}}" ng-repeat="obj in phpObject" data-x="{{obj.posx}}" data-y="{{obj.posy}}" style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}"
                     ng-dblclick="infoModal($index)" ng-class="{create : obj.action=='create',update:obj.action=='update',delete:obj.action=='delete'}">
-                    <div class="title">{{obj.name}}</div>
-                    <div class="propCont">
+                    <div class="title interactable">{{obj.name}}</div>
+                    <div class="propCont interactable">
                         <div class="prop" ng-repeat="ps in obj.prop" ng-class="{primary : ps[2]}">{{ps[0]}} : {{ps[1]}}</div>
                     </div>
+                    <div class="connectorLeft" ng-mousedown="startLink($event)"></div>
+                    <div class="connectorRight" ng-mousedown="startLink($event)"></div>
                 </div>
             </div>
         </div>
@@ -73,7 +75,7 @@
             <div id="apiCont" class="col s12">
                 <div class="row">
                     <label>
-                        <input type="checkbox" ng-model="apiInfo.needAuth" ng-change="updateAuth()"/>
+                        <input type="checkbox" ng-model="apiInfo.needAuth" ng-change="updateAuth()" />
                         <span>Besoin d'authentification</span>
                     </label>
                 </div>

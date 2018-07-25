@@ -1,7 +1,8 @@
-app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout) {
+app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $compile) {
     $scope.info = {};
     $scope.page = "";
     $scope.idphpObject = -1;
+    $scope.currentLine = null;
     $scope.phpObject = [{
         "id": "1495114066365",
         "action": "",
@@ -22,6 +23,7 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout) {
         password: ""
     }
     $scope.objectSelectPhp = {};
+    $scope.linkBetweenObject = [];
 
 
     $scope.init = function () {
@@ -165,6 +167,109 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout) {
             var instances = M.FormSelect.init(elems, {});
         }, 0);
     }
+    $scope.startLink = function (e) {
+        var t = e.currentTarget;
+        var posinarray = t.parentNode.attributes["posinarray"].value;
+        var id = $scope.phpObject[posinarray].id;
+        var el = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        var x1 = t.offsetLeft + Number(t.parentNode.attributes["data-x"].value) + 2.5;
+        var y1 = t.offsetTop + Number(t.parentNode.attributes["data-y"].value) + 2.5;
+        el.setAttribute("el1", id);
+        el.innerHTML = '<line onclick="alertDialog()" x1="' + x1 + '" y1="' + y1 + '" x2="' + x1 + '" y2="' + y1 + '" stroke="red"/>';
+        document.getElementById("objectCont").appendChild(el);
+        $compile(el)($scope)
+        $timeout(function () {
+            $scope.currentLine = el;
+
+        })
+    }
+    $scope.moveLine = function (e) {
+        if ($scope.currentLine != null) {
+            if (e.target == document.getElementById("objectCont") || e.target.nodeName == "svg") {
+                $scope.currentLine.children[0].setAttribute("x2", e.originalEvent.layerX);
+                $scope.currentLine.children[0].setAttribute("y2", e.originalEvent.layerY);
+            }
+        }
+    }
+    $scope.stopLine = function (e) {
+        if ($scope.currentLine != null) {
+            var t = e.target;
+            if (t.className == "connectorRight") {
+                var x2 = t.offsetLeft + Number(t.parentNode.attributes["data-x"].value) - 2.5;
+                var y2 = t.offsetTop + Number(t.parentNode.attributes["data-y"].value) + 2.5;
+                $scope.currentLine.children[0].setAttribute("x2", x2);
+                $scope.currentLine.children[0].setAttribute("y2", y2);
+                var posinarray = t.parentNode.attributes["posinarray"].value;
+                var id = $scope.phpObject[posinarray].id;
+                $scope.currentLine.setAttribute("el2", id);
+                $scope.linkBetweenObject.push({
+                    el1: $scope.currentLine.attributes["el1"].value,
+                    el2: id
+                })
+                $scope.calculatePos($scope.currentLine);
+            } else if (t.className == "connectorLeft") {
+                var x2 = t.offsetLeft + Number(t.parentNode.attributes["data-x"].value) - 2.5;
+                var y2 = t.offsetTop + Number(t.parentNode.attributes["data-y"].value) - 2.5;
+                $scope.currentLine.children[0].setAttribute("x2", x2);
+                $scope.currentLine.children[0].setAttribute("y2", y2);
+                var posinarray = t.parentNode.attributes["posinarray"].value;
+                var id = $scope.phpObject[posinarray].id;
+                $scope.currentLine.setAttribute("el2", id);
+                $scope.linkBetweenObject.push({
+                    el1: $scope.currentLine.attributes["el1"].value,
+                    el2: id
+                })
+                $scope.calculatePos($scope.currentLine);
+            } else {
+                t.parentNode.removeChild(t);
+            }
+            $scope.currentLine = null;
+        }
+    }
+    $scope.redrawAll = function () {
+        for (var i = 0; i < $scope.linkBetweenObject.length; i++) {
+            var current = $scope.linkBetweenObject[i];
+            var ligne = document.querySelector('svg[el1="' + current.el1 + '"][el2="' + current.el2 + '"]');
+            if (ligne == null) {
+                ligne = document.querySelector('svg[el1="' + current.el2 + '"][el2="' + current.el1 + '"]');
+            }
+            $scope.calculatePos(ligne)
+            console.log(ligne);
+        }
+    }
+    $scope.calculatePos = function (ligne) {
+        //element 1 is the left one
+        if(!ligne.attributes["el1"] || !ligne.attributes["el2"]){
+            ligne.parentNode.removeChild(ligne);
+            return;
+        }
+        var el1 = ligne.attributes["el1"].value;
+        var el2 = ligne.attributes["el2"].value;
+        el1 = document.getElementById('object' + el1);
+        el2 = document.getElementById('object' + el2);
+        // swap if we are wrong
+        if (Number(el1.attributes["data-x"].value) > Number(el2.attributes["data-x"].value)) {
+            var temp = el1;
+            el1 = el2;
+            el2 = temp;
+        }
+
+        var connRight = el1.querySelector(".connectorRight");
+        var connLeft = el2.querySelector(".connectorLeft");
+
+        var x1 = connRight.offsetLeft + Number(connRight.parentNode.attributes["data-x"].value) + 2.5;
+        var y1 = connRight.offsetTop + Number(connRight.parentNode.attributes["data-y"].value) + 2.5;
+        var x2 = connLeft.offsetLeft + Number(connLeft.parentNode.attributes["data-x"].value) + 2.5;
+        var y2 = connLeft.offsetTop + Number(connLeft.parentNode.attributes["data-y"].value) + 2.5;
+
+        ligne.children[0].setAttribute("x1", x1);
+        ligne.children[0].setAttribute("y1", y1);
+        ligne.children[0].setAttribute("x2", x2);
+        ligne.children[0].setAttribute("y2", y2);
+    }
+    $scope.alertTemp = function () {
+        alert("salut");
+    }
 });
 socket.on("infoProject", function (data) {
     angular.element(document.getElementById('view')).scope().setInfo(data);
@@ -176,3 +281,7 @@ socket.on("APIObjs", function (data) {
     console.log(data)
     angular.element(document.getElementById('view')).scope().setAPIObject(data);
 })
+
+function alertDialog() {
+    angular.element(document.getElementById('view')).scope().alertTemp();
+}
