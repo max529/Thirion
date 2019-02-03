@@ -6,15 +6,19 @@ module.exports = {
         return new Promise((resolve, reject) => {
 
             fs.writeFileSync(path + "project.config.json", JSON.stringify(info));
+            if (!info.nodejs) {
+                pathTemp = path + "css";
+                fs.mkdirSync(pathTemp);
 
-            pathTemp = path + "css";
-            fs.mkdirSync(pathTemp);
+                pathTemp = path + "js";
+                fs.mkdirSync(pathTemp);
 
-            pathTemp = path + "js";
-            fs.mkdirSync(pathTemp);
+                pathTemp = path + "media";
+                fs.mkdirSync(pathTemp);
 
-            pathTemp = path + "media";
-            fs.mkdirSync(pathTemp);
+                var strTemp = fs.readFileSync(__dirname + '/../defaultPage/server.js');
+                fs.writeFileSync(path + "server.js", strTemp);
+            }
 
             getos(function (e, os) {
                 var cmd = "";
@@ -24,6 +28,7 @@ module.exports = {
                     cmd = "cd " + path + " && npm install";
                 }
                 if (!info.scss) {
+                    var dependencies = {};
                     var packageJSON = {
                         name: info.name,
                         version: "1.0.0",
@@ -34,35 +39,46 @@ module.exports = {
                         },
                         author: "",
                         license: "ISC",
+                        dependencies: dependencies,
                         devDependencies: {
                             "live-server": "^1.1.0"
                         }
                     }
-    
+
                     fs.writeFileSync(path + "package.json", JSON.stringify(packageJSON));
                     exec(cmd, function () { })
-    
-    
-                    var strTemp = fs.readFileSync(__dirname + '/../defaultPage/server.js');
-                    fs.writeFileSync(path + "server.js", strTemp);
-    
+
                 }
                 socket.emit("projectOnCreation", "Default project created");
                 resolve();
             })
-            
-
-
-            
-
         })
-
-
-
-
     },
 
+    addNodeJSInfo: function (path, info, socket) {
+        const fs = require('fs');
+        const exec = require('child_process').execSync;
 
+        var cmd = path.substring(0, 2) + " && cd " + path + " && express --view=pug -f";
+        exec(cmd, function () { })
+        pathTemp = path + ".object";
+        fs.mkdirSync(pathTemp);
+
+        pathTemp = path + "model";
+        fs.mkdirSync(pathTemp);
+
+        var pathModel = path + "model/";
+        var connFile = fs.readFileSync(__dirname + '/../defaultPage/conn.js', 'utf8');
+        connFile = connFile
+            .replace("hostDB", info.db.host)
+            .replace("userDB", info.db.username)
+            .replace("passwordDB", info.db.pass)
+            .replace("nameDB", info.db.name)
+        fs.writeFileSync(pathModel + "conn.js", connFile);
+
+        var cmd = path.substring(0, 2) + " && cd " + path + " && npm i --save mysql2 && npm i";
+        exec(cmd, function () { })
+    },
 
     addPHPInfo: function (path, info, socket) {
         const fs = require('fs');
@@ -95,15 +111,15 @@ module.exports = {
         socket.emit("projectOnCreation", "PHP added")
     },
 
-    addAPIInfo: function(path, info, socket){
+    addAPIInfo: function (path, info, socket) {
         const fs = require('fs');
 
         pathTemp = path + "api";
         fs.mkdirSync(pathTemp);
 
 
-        var defaulthtaccess = fs.readFileSync(__dirname+"/../defaultPage/.htaccessApi");
-        fs.writeFileSync(path+".htaccess", defaulthtaccess);
+        var defaulthtaccess = fs.readFileSync(__dirname + "/../defaultPage/.htaccessApi");
+        fs.writeFileSync(path + ".htaccess", defaulthtaccess);
 
     },
 

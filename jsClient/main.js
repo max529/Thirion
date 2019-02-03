@@ -1,4 +1,5 @@
 var app = angular.module('projectManager', ['ngRoute']);
+var path = "";
 app.config(function ($routeProvider) {
     $routeProvider
         .when('/', {
@@ -92,6 +93,7 @@ $(document).ready(function () {
 
             }
         });
+    
 });
 
 function dragMoveListener(event) {
@@ -117,8 +119,8 @@ function dragMoveListener(event) {
 function reDrawLine(target) {
     var posinarray = target.attributes["posinarray"].value;
     var id = angular.element(document.getElementById('view')).scope().phpObject[posinarray].id;
-    var list1 = document.querySelectorAll("svg[el1=\"" + id + "\"]");
-    var list2 = document.querySelectorAll("svg[el2=\"" + id + "\"]");
+    var list1 = document.querySelectorAll("g[el1=\"" + id + "\"]");
+    var list2 = document.querySelectorAll("g[el2=\"" + id + "\"]");
 
     for (var i = 0; i < list1.length; i++) {
         angular.element(document.getElementById('view')).scope().calculatePos(list1[i]);

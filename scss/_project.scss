@@ -43,8 +43,12 @@
                 position: absolute;
                 width: 100%;
                 height: 100%;
+                overflow:visible;
                 line{
                     cursor: pointer;
+                }
+                #selectedLine{
+                    stroke: rgb(0, 38, 255); fill: rgb(0, 38, 255);
                 }
             }
             .object {
@@ -71,23 +75,29 @@
                         background-color: rgba(0, 0, 0, 0.1);
                     }
                 }
-                .connectorLeft {
+                .connector{
                     position: absolute;
-                    left: -5px;
+                    background-color: black;
+                    cursor: grab;
+                    transition:all 0.5s;
                     width: 5px;
                     height: 5px;
-                    background-color: black;
+                }
+                .connectorLeft {
+                    left: -5px;
                     top: calc(50% - 2.5px);
-                    cursor: grab;
                 }
                 .connectorRight {
-                    position: absolute;
-                    right: -5px;
-                    width: 5px;
-                    height: 5px;
-                    background-color: black;
+                    right: -5px;                 
                     top: calc(50% - 2.5px);
-                    cursor: grab;
+                }
+                .connectorTop{
+                    top:-5px;
+                    left:calc(50% - 2.5px);
+                }
+                .connectorBottom{
+                    bottom:-5px;
+                    left:calc(50% - 2.5px);
                 }
             }
             .create {

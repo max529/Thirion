@@ -8,8 +8,10 @@
     </div>
     <div class="row">
         <div class="col s12">
-            <input type="checkbox" id="scss" ng-model="form.scss" />
-            <label for="scss">SCSS</label>
+            <label for="scss">
+                <input type="checkbox" id="scss" ng-model="form.scss" />
+                <span>SCSS</span>
+            </label>
         </div>
         <div class="col s12">
             <label for="materialize">
@@ -25,8 +27,14 @@
         </div>
         <div class="col s12">
             <label for="php">
-                <input type="checkbox" id="php" ng-model="form.php" />
+                <input type="checkbox" id="php" ng-model="form.php" ng-change="revalidateForm('php')"/>
                 <span>PHP</span>
+            </label>
+        </div>
+        <div class="col s12">
+            <label for="nodejs">
+                <input type="checkbox" id="nodejs" ng-model="form.nodejs" ng-change="revalidateForm('nodejs')" />
+                <span>nodeJS</span>
             </label>
         </div>
         <div class="col s12">

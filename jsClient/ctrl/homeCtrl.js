@@ -37,6 +37,7 @@ app.controller('homeCtrl', function($scope, ajaxHelper, $http, $timeout) {
         }
     }
     $scope.createProject = function(){
+        path = projectPath;
     	socket.emit('setProjectPath', projectPath);
     }
 });

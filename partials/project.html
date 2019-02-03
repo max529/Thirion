@@ -7,6 +7,7 @@
                 <li class="collection-item" ng-class="{disabled : !info.materialize}" ng-click="selectTab($event,'info')">Materialize</li>
                 <li class="collection-item" ng-class="{disabled : !info.angular}" ng-click="selectTab($event,'info')">Angular</li>
                 <li class="collection-item" ng-class="{disabled : !info.php}" ng-click="selectTab($event,'php')">Php</li>
+                <li class="collection-item" ng-class="{disabled : !info.nodejs}" ng-click="selectTab($event,'nodejs')">NodeJS</li>
                 <li class="collection-item" ng-class="{disabled : !info.api}" ng-click="selectTab($event,'api')">API</li>
             </ul>
         </div>
@@ -44,6 +45,12 @@
                     </label>
                 </p>
                 <p>
+                    <label for="nodejs">
+                        <input type="checkbox" id="nodejs" ng-model="info.nodejs" disabled="disabled" />
+                        <span>NodeJS</span>
+                    </label>
+                </p>
+                <p>
                     <label for="api">
                         <input type="checkbox" id="api" ng-model="info.api" disabled="disabled" />
                         <span>API</span>
@@ -51,21 +58,27 @@
                 </p>
             </div>
         </div>
-        <div id="phpPage" class="col s9 page" ng-if="page=='php'">
+        <div id="phpPage" class="col s9 page" ng-if="page=='php' || page=='nodejs'">
             <h3>
-                <span>PHP editor</span>
+                <span>DB editor</span>
                 <a class="btn right" ng-click="createObjectPhp()">créer</a>
             </h3>
             <div id="objectCont" ng-mousemove="moveLine($event)" ng-mouseup="stopLine($event)">
-                <div class="object" id="{{'object'+obj.id}}" posinarray="{{$index}}" ng-repeat="obj in phpObject" data-x="{{obj.posx}}" data-y="{{obj.posy}}" style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}"
+                <div class="object" id="{{'object'+obj.id}}" posinarray="{{$index}}" ng-repeat="obj in phpObject"
+                    data-x="{{obj.posx}}" data-y="{{obj.posy}}" style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}"
                     ng-dblclick="infoModal($index)" ng-class="{create : obj.action=='create',update:obj.action=='update',delete:obj.action=='delete'}">
                     <div class="title interactable">{{obj.name}}</div>
                     <div class="propCont interactable">
                         <div class="prop" ng-repeat="ps in obj.prop" ng-class="{primary : ps[2]}">{{ps[0]}} : {{ps[1]}}</div>
                     </div>
-                    <div class="connectorLeft" ng-mousedown="startLink($event)"></div>
-                    <div class="connectorRight" ng-mousedown="startLink($event)"></div>
+                    <div class="connectorLeft connector" ng-mousedown="startLink($event)"></div>
+                    <div class="connectorRight connector" ng-mousedown="startLink($event)"></div>
+                    <div class="connectorTop connector" ng-mousedown="startLink($event)"></div>
+                    <div class="connectorBottom connector" ng-mousedown="startLink($event)"></div>
                 </div>
+                <svg id="linkLayer">
+
+                </svg>
             </div>
         </div>
         <div id="APIPage" class="col s9 page" ng-if="page=='api'">
@@ -138,8 +151,10 @@
                     </select>
                 </td>
                 <td class="col s3 action">
-                    <input type="checkbox" id="{{'prim'+$index}}" ng-model="objectSelectPhp.prop[$index][2]" />
-                    <label for="{{'prim'+$index}}">Primary</label>
+                    <label for="{{'prim'+$index}}">
+                        <input type="checkbox" id="{{'prim'+$index}}" ng-model="objectSelectPhp.prop[$index][2]" />
+                        <span>Primary</span>
+                    </label>
                 </td>
                 <td class="col s3 action">
                     <a class="delete" ng-click="removeProp($index)">

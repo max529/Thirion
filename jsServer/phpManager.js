@@ -4,20 +4,25 @@ var self = module.exports = {
         const glob = require('glob');
         var pathTemp = path + ".object/";
 
-        var res = [];
+        var res = {
+            data : [],
+            link : []
+        };
 
         var files = fs.readdirSync(pathTemp);
         files.forEach(function (file) {
-            //console.log(file);
             var content = JSON.parse(fs.readFileSync(pathTemp + file, 'utf8'));
-            //console.log(content);
-
-            res.push(content);
+            if (file != 'link') {
+                res.data.push(content);
+            } else{
+                res.link = content
+            }
         })
         return res;
 
     },
-    parsePhpObject: function (data, path) {
+    parsePhpObject: function (data, link, path) {
+        fs.writeFileSync(path + ".object/link", JSON.stringify(link));
         for (var i = 0; i < data.length; i++) {
             var ob = data[i];
             self.createPhpObject(data, path, ob);
