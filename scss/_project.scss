@@ -139,6 +139,14 @@
     }
 }
 
+#linkObject{
+    .select-wrapper{
+        display: inline-block;
+        width: 50px;
+        margin: 0 25px;
+    }
+}
+
 #project>.row>.col {
     padding: 0;
 }

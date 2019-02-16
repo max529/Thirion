@@ -6,4 +6,36 @@ block content
     form(method="POST")
 updateHidden
 updateForm
-        input(type="submit" value="Envoyer")
+        input.btn(type="submit" value="Envoyer")
+    .separator
+    .col.s12.infoSupp
+        ul.tabs
+            each tab, label in item
+                if label != 'main'
+                    li.tab.active
+                        a(href='#'+label)= label
+        each props, label in item
+            if label != 'main'
+                div(id=""+label).col.s12
+                    //- .toolbarTab.col.s12
+                    //-     a#addToolbar.btn-small.waves-effect.waves-light.green
+                    //-         i.material-icons.left add
+                    //-         span Ajouter
+                    //-     a#editToolbar.btn-small.waves-effect.waves-light.blue
+                    //-         i.material-icons.left edit
+                    //-         span Modifier
+                    //-     a#deleteToolbar.btn-small.waves-effect.waves-light.red
+                    //-         i.material-icons.left delete
+                    //-         span Supprimer
+                    table
+                        thead
+                            if(props.length > 0)
+                                tr
+                                    each prop, labelProp in props[0]
+                                        th.center 
+                                            span= labelProp
+                        tbody
+                            each propList in props
+                                tr(onclick="selectCurrentEngagement(this)")
+                                    each prop in propList
+                                        td.center= prop  

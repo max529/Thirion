@@ -27,7 +27,7 @@ var self = module.exports = {
                     if (err)
                         console.log(err);
                     if (results.length == 0) {
-                        self.createTable(path, ob, connect).then(() => {
+                        self.createTable(path, ob, connect, link, data).then(() => {
                             recu(data, i + 1).then(() => {
                                 resolve();
                             })
@@ -44,14 +44,14 @@ var self = module.exports = {
 
         })
     },
-    createTable: function (path, objet, connect) {
+    createTable: function (path, objet, connect, link, data) {
         return new Promise((resolve, reject) => {
             objet.name = objet.name.toLowerCase();
             var cmd = "CREATE TABLE " + objet.name + "(";
             var primIndex = [];
             for (var i = 0; i < objet.prop.length; i++) {
                 var prop = objet.prop[i];
-                prop[1] = self._determineType(prop[1]);
+                prop[1] = self._determineType(prop, link, data, objet);
                 cmd += prop[0] + " " + prop[1] + " NOT NULL"
                 if (prop[2]) {
                     primIndex.push(i);
@@ -92,7 +92,8 @@ var self = module.exports = {
             */
         })
     },
-    _determineType: function (type) {
+    _determineType: function (prop, link, data, objet) {
+        var type = prop[1];
         if (type == "int") {
             return "INT"
         } else if (type == "varchar255") {
@@ -103,6 +104,28 @@ var self = module.exports = {
             return "TEXT";
         } else if (type == "double") {
             return "DOUBLE";
+        } else if (type == "ref") {
+            for (var i = 0; i < data.length; i++) {
+                var current = data[i];
+                // on a trouvé la seconde table
+                if (prop[0] == (objet.name + "_" + current.name).toLowerCase()) {
+                    for (var j = 0; j < current.prop.length; j++) {
+                        var currentJ = current.prop[j];
+                        if (currentJ[2] == true) {
+                            return self._determineType(currentJ, link, data, current);
+                        }
+                    }
+                } else if (prop[0] == (current.name + "_" + objet.name).toLowerCase()) {
+                    for (var j = 0; j < current.prop.length; j++) {
+                        var currentJ = current.prop[j];
+                        if (currentJ[2] == true) {
+                            return self._determineType(currentJ, link, data, current);
+                        }
+                    }
+                }
+            }
+            console.log('type link not found');
+            return "INT"
         }
     }
 }

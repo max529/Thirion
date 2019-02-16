@@ -1,4 +1,5 @@
 var connection = require('./conn');
+var utils = require('./utils');
 
 var DefaultObject = {
     add(insertProp) {
@@ -45,6 +46,9 @@ var DefaultObject = {
             );
         })
     },
+    getByIdWithLink(selectByIdProp) {
+        selectWithLink
+    },
     getById(selectByIdProp) {
         return new Promise((resolve, reject) => {
             connection.execute(
@@ -54,7 +58,7 @@ var DefaultObject = {
                     results = JSON.parse(JSON.stringify(results));
                     if (results.length > 0) {
                         resolve(results[0]);
-                    }else{
+                    } else {
                         resolve(null);
                     }
                 }

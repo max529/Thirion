@@ -3,12 +3,18 @@
         <div class="col s3">
             <ul class="collection" id="listAction">
                 <li class="collection-item active" ng-click="selectTab($event,'info')">Info global</li>
-                <li class="collection-item" ng-class="{disabled : !info.scss}" ng-click="selectTab($event,'info')">Scss</li>
-                <li class="collection-item" ng-class="{disabled : !info.materialize}" ng-click="selectTab($event,'info')">Materialize</li>
-                <li class="collection-item" ng-class="{disabled : !info.angular}" ng-click="selectTab($event,'info')">Angular</li>
-                <li class="collection-item" ng-class="{disabled : !info.php}" ng-click="selectTab($event,'php')">Php</li>
-                <li class="collection-item" ng-class="{disabled : !info.nodejs}" ng-click="selectTab($event,'nodejs')">NodeJS</li>
-                <li class="collection-item" ng-class="{disabled : !info.api}" ng-click="selectTab($event,'api')">API</li>
+                <li class="collection-item" ng-class="{disabled : !info.scss}" ng-click="selectTab($event,'info')">Scss
+                </li>
+                <li class="collection-item" ng-class="{disabled : !info.materialize}"
+                    ng-click="selectTab($event,'info')">Materialize</li>
+                <li class="collection-item" ng-class="{disabled : !info.angular}" ng-click="selectTab($event,'info')">
+                    Angular</li>
+                <li class="collection-item" ng-class="{disabled : !info.php}" ng-click="selectTab($event,'php')">Php
+                </li>
+                <li class="collection-item" ng-class="{disabled : !info.nodejs}" ng-click="selectTab($event,'nodejs')">
+                    NodeJS</li>
+                <li class="collection-item" ng-class="{disabled : !info.api}" ng-click="selectTab($event,'api')">API
+                </li>
             </ul>
         </div>
         <div class="col s9 page" id="contentInfo" ng-if="page=='info'">
@@ -65,11 +71,13 @@
             </h3>
             <div id="objectCont" ng-mousemove="moveLine($event)" ng-mouseup="stopLine($event)">
                 <div class="object" id="{{'object'+obj.id}}" posinarray="{{$index}}" ng-repeat="obj in phpObject"
-                    data-x="{{obj.posx}}" data-y="{{obj.posy}}" style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}"
-                    ng-dblclick="infoModal($index)" ng-class="{create : obj.action=='create',update:obj.action=='update',delete:obj.action=='delete'}">
+                    data-x="{{obj.posx}}" data-y="{{obj.posy}}"
+                    style="{{'transform: translate('+obj.posx+'px, '+obj.posy+'px);'}}" ng-dblclick="infoModal($index)"
+                    ng-class="{create : obj.action=='create',update:obj.action=='update',delete:obj.action=='delete'}">
                     <div class="title interactable">{{obj.name}}</div>
                     <div class="propCont interactable">
-                        <div class="prop" ng-repeat="ps in obj.prop" ng-class="{primary : ps[2]}">{{ps[0]}} : {{ps[1]}}</div>
+                        <div class="prop" ng-repeat="ps in obj.prop" ng-class="{primary : ps[2]}">{{ps[0]}} : {{ps[1]}}
+                        </div>
                     </div>
                     <div class="connectorLeft connector" ng-mousedown="startLink($event)"></div>
                     <div class="connectorRight connector" ng-mousedown="startLink($event)"></div>
@@ -94,7 +102,8 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s6">
-                        <select ng-model="apiInfo.obj" ng-options="obj.name  for  obj in phpObject" ng-change="updateAPI()">
+                        <select ng-model="apiInfo.obj" ng-options="obj.name  for  obj in phpObject"
+                            ng-change="updateAPI()">
 
                         </select>
                         <label>Classe d'authentification</label>
@@ -137,7 +146,7 @@
                 <th class="action">primary</th>
                 <th class="action">Action</th>
             </tr>
-            <tr ng-repeat="ps in objectSelectPhp.prop">
+            <tr ng-repeat="ps in objectSelectPhp.prop" ng-if="objectSelectPhp.prop[$index][1] != 'ref'">
                 <td class="col s3">
                     <input type="text" ng-model="objectSelectPhp.prop[$index][0]" />
                 </td>
@@ -165,8 +174,37 @@
         </table>
     </div>
     <div class="modal-footer">
-        <a class="modal-action modal-close waves-effect waves-light white-text btn-flat left red" ng-click="suppObject()">Supprimer</a>
+        <a class="modal-action modal-close waves-effect waves-light white-text btn-flat left red"
+            ng-click="suppObject()">Supprimer</a>
         <a class="modal-action modal-close waves-effect waves-red btn-flat">Annuler</a>
         <a class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="validateObject()">Valider</a>
+    </div>
+</div>
+<div id="linkObject" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>Lien</h4>
+        <div>
+            <span>{{selectedLinkEl1.name}} a</span>
+            <select style="width:120px" ng-model="selectedLink.el1_el2">
+                <option>1</option>
+                <option>*</option>
+            </select>
+            <span>{{selectedLinkEl2.name}}</span>
+        </div>
+        <div>
+            <span>{{selectedLinkEl2.name}} a</span>
+            <select style="width:120px" ng-model="selectedLink.el2_el1">
+                <option>1</option>
+                <option>*</option>
+            </select>
+            <span>{{selectedLinkEl1.name}}</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-light white-text btn-flat left red"
+            ng-click="removeLinkBetweenObject()">Supprimer</a>
+        <a class="modal-action modal-close waves-effect waves-red btn-flat">Annuler</a>
+        <a class="modal-action modal-close waves-effect waves-green btn-flat"
+            ng-click="validateLinkBetweenObject()">Valider</a>
     </div>
 </div>

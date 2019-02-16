@@ -24,6 +24,9 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
     }
     $scope.objectSelectPhp = {};
     $scope.linkBetweenObject = [];
+    $scope.selectedLink;
+    $scope.selectedLinkEl1;
+    $scope.selectedLinkEl2;
 
 
     $scope.init = function () {
@@ -64,13 +67,7 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
         $timeout(function () {
             $scope.phpObject = res.data;
             $scope.linkBetweenObject = res.link;
-            for (var i = 0; i < $scope.linkBetweenObject.length; i++) {
-                var el = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-                el.setAttribute("el1", $scope.linkBetweenObject[i].el1);
-                el.setAttribute("el2", $scope.linkBetweenObject[i].el2);
-                el.innerHTML = '<line onclick="selectLine(this)" stroke="red" style="stroke-width:5"/><text fill="black" transform="">N1</text><text fill="black" transform="">N2</text>';
-                document.getElementById("linkLayer").appendChild(el);
-            }
+
         }, 0);
         $timeout(function () {
             var elems = document.querySelectorAll('select');
@@ -194,7 +191,7 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
         var x1 = t.offsetLeft + Number(t.parentNode.attributes["data-x"].value) + 2.5;
         var y1 = t.offsetTop + Number(t.parentNode.attributes["data-y"].value) + 2.5;
         el.setAttribute("el1", id);
-        el.innerHTML = '<line onclick="selectLine(this)" x1="' + x1 + '" y1="' + y1 + '" x2="' + x1 + '" y2="' + y1 + '" stroke="red" style="stroke-width:5"/><text x="' + x1 + '" y="' + y1 + '" fill="black" transform="">N1</text><text x="' + x1 + '" y="' + y1 + '" fill="black" transform="">N2</text>';
+        el.innerHTML = '<line onclick="selectLine(this)" x1="' + x1 + '" y1="' + y1 + '" x2="' + x1 + '" y2="' + y1 + '" stroke="red" style="stroke-width:5"/><text x="' + x1 + '" y="' + y1 + '" fill="black" transform="">*</text><text x="' + x1 + '" y="' + y1 + '" fill="black" transform="">1</text>';
         document.getElementById("linkLayer").appendChild(el);
         $compile(el)($scope)
         var listConns = document.getElementsByClassName('connectorLeft');
@@ -211,7 +208,6 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
         }
         $timeout(function () {
             $scope.currentLine = el;
-
         })
     }
     $scope.moveLine = function (e) {
@@ -226,6 +222,7 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
         if ($scope.currentLine != null) {
             var t = e.target;
             console.log(t);
+            var isAdded = false;
             if (t.classList.contains("connectorRight")) {
                 var x2 = t.offsetLeft + Number(t.parentNode.attributes["data-x"].value) - 2.5;
                 var y2 = t.offsetTop + Number(t.parentNode.attributes["data-y"].value) + 2.5;
@@ -236,9 +233,11 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
                 $scope.currentLine.setAttribute("el2", id);
                 $scope.linkBetweenObject.push({
                     el1: $scope.currentLine.attributes["el1"].value,
-                    el2: id
+                    el2: id,
+                    el1_el2: "1",
+                    el2_el1: "*"
                 })
-                $scope.calculatePos($scope.currentLine);
+                isAdded = true;
             } else if (t.classList.contains("connectorLeft")) {
                 var x2 = t.offsetLeft + Number(t.parentNode.attributes["data-x"].value) - 2.5;
                 var y2 = t.offsetTop + Number(t.parentNode.attributes["data-y"].value) - 2.5;
@@ -249,31 +248,47 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
                 $scope.currentLine.setAttribute("el2", id);
                 $scope.linkBetweenObject.push({
                     el1: $scope.currentLine.attributes["el1"].value,
-                    el2: id
+                    el2: id,
+                    el1_el2: "1",
+                    el2_el1: "*"
                 })
-                $scope.calculatePos($scope.currentLine);
+                isAdded = true;
             } else {
                 $scope.currentLine.parentNode.removeChild($scope.currentLine);
+            }
+            if (isAdded) {
+                $scope.selectedLink = $scope.linkBetweenObject[$scope.linkBetweenObject.length - 1];
+                for (var i = 0; i < $scope.phpObject.length; i++) {
+                    var current = $scope.phpObject[i];
+                    if (current.id == $scope.selectedLink.el1) {
+                        $scope.selectedLinkEl1 = current;
+                    } else if (current.id == $scope.selectedLink.el2) {
+                        $scope.selectedLinkEl2 = current;
+                    }
+                }
+                $scope.validateLinkBetweenObject();
+            } else {
+                $scope.calculatePos(null);
             }
             $scope.currentLine = null;
         }
     }
     $scope.redrawAll = function () {
+        document.getElementById("linkLayer").innerHTML = "";
         for (var i = 0; i < $scope.linkBetweenObject.length; i++) {
-            var current = $scope.linkBetweenObject[i];
-            var ligne = document.querySelector('g[el1="' + current.el1 + '"][el2="' + current.el2 + '"]');
-            if (ligne == null) {
-                ligne = document.querySelector('g[el1="' + current.el2 + '"][el2="' + current.el1 + '"]');
-            }
-            $scope.calculatePos(ligne)
-            console.log(ligne);
+            var el = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+            el.setAttribute("el1", $scope.linkBetweenObject[i].el1);
+            el.setAttribute("el2", $scope.linkBetweenObject[i].el2);
+            el.innerHTML = '<line onclick="selectLine(this)" stroke="red" style="stroke-width:5"/><text fill="black" transform="">' + $scope.linkBetweenObject[i].el2_el1 + '</text><text fill="black" transform="">' + $scope.linkBetweenObject[i].el1_el2 + '</text>';
+            document.getElementById("linkLayer").appendChild(el);
+            $scope.calculatePos(el)
         }
     }
     $scope.calculatePos = function (ligne) {
         //reset size
         var timer = 750;
         var listConns = document.getElementsByClassName('connectorLeft');
-        if (listConns[0].style.width == '5px') {
+        if (listConns[0].offsetWidth == 5) {
             timer = 0;
         }
         for (var i = 0; i < listConns.length; i++) {
@@ -286,6 +301,9 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
             listConns[i].style.width = "5px"
             listConns[i].style.right = "-5px"
             listConns[i].style.height = "5px"
+        }
+        if (ligne == null) {
+            return
         }
         setTimeout(function () {
             //element 1 is the left one
@@ -361,8 +379,9 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
     $scope.alertTemp = function () {
         alert("salut");
     }
-    $scope.removeLinkBetweenObject = function (id1, id2) {
-        console.log(id1 + " " + id2);
+    $scope.removeLinkBetweenObject = function () {
+        var id1 = $scope.selectedLink.el1;
+        var id2 = $scope.selectedLink.el2;
         for (var i = 0; i < $scope.linkBetweenObject.length; i++) {
             if ($scope.linkBetweenObject[i].el1 == id1 && $scope.linkBetweenObject[i].el2 == id2) {
                 $scope.linkBetweenObject.splice(i, 1);
@@ -370,8 +389,140 @@ app.controller('projectCtrl', function ($scope, ajaxHelper, $http, $timeout, $co
                 $scope.linkBetweenObject.splice(i, 1);
             }
         }
-        console.log($scope.linkBetweenObject);
-        $scope.redrawAll();
+        //selectedLine.parentNode.removeChild(selectedLine);
+
+        for (var i = 0; i < $scope.selectedLinkEl1.prop.length; i++) {
+            var current = $scope.selectedLinkEl1.prop[i];
+            if (current[0] == ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()) {
+                $scope.selectedLinkEl1.prop.splice(i, 1);
+            }
+        }
+        for (var i = 0; i < $scope.selectedLinkEl2.prop.length; i++) {
+            var current = $scope.selectedLinkEl2.prop[i];
+            if (current[0] == ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()) {
+                $scope.selectedLinkEl2.prop.splice(i, 1);
+            }
+        }
+
+        $timeout(function () {
+            for (var i = 0; i < $scope.phpObject.length; i++) {
+                var current = $scope.phpObject[i];
+                if (current.id == $scope.selectedLink.el1) {
+                    $scope.phpObject[i] = $scope.selectedLinkEl1;
+                } else if (current.id == $scope.selectedLink.el2) {
+                    $scope.phpObject[i] = $scope.selectedLinkEl2
+                }
+            }
+
+            selectedLine = null;
+            $scope.selectedLink = null;
+            $scope.selectedLinkEl1 = null;
+            $scope.selectedLinkEl2 = null;
+            $scope.redrawAll();
+        }, 0)
+
+
+    }
+    $scope.validateLinkBetweenObject = function () {
+        console.log($scope.selectedLink);
+        var id1 = $scope.selectedLink.el1;
+        var id2 = $scope.selectedLink.el2;
+        for (var i = 0; i < $scope.linkBetweenObject.length; i++) {
+            if ($scope.linkBetweenObject[i].el1 == id1 && $scope.linkBetweenObject[i].el2 == id2) {
+                $scope.linkBetweenObject[i] = $scope.selectedLink;
+            } else if ($scope.linkBetweenObject[i].el1 == id2 && $scope.linkBetweenObject[i].el2 == id1) {
+                $scope.linkBetweenObject[i] = $scope.selectedLink;
+            }
+        }
+
+
+
+        //on remove les propriétés qui nous concerne
+        for (var i = 0; i < $scope.selectedLinkEl1.prop.length; i++) {
+            var current = $scope.selectedLinkEl1.prop[i];
+            if (current[0] == ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()) {
+                $scope.selectedLinkEl1.prop.splice(i, 1);
+            }
+        }
+        for (var i = 0; i < $scope.selectedLinkEl2.prop.length; i++) {
+            var current = $scope.selectedLinkEl2.prop[i];
+            if (current[0] == ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()) {
+                $scope.selectedLinkEl2.prop.splice(i, 1);
+            }
+        }
+
+        //on calcule se qu'on doit ajouter
+        if ($scope.selectedLink.el1_el2 == "*" && $scope.selectedLink.el2_el1 == "*") {
+            // table intermediaire
+        } else if ($scope.selectedLink.el1_el2 == "1" && $scope.selectedLink.el2_el1 == "*") {
+            // id du 2 dans 1
+            var nameProp = ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()
+            var a = [nameProp, 'ref', false];
+            $scope.selectedLinkEl1.prop.push(a)
+        } else if ($scope.selectedLink.el1_el2 == "*" && $scope.selectedLink.el2_el1 == "1") {
+            // id du 1 dans 2
+            var nameProp = ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()
+            var a = [nameProp, 'ref', false];
+            $scope.selectedLinkEl2.prop.push(a)
+        } else if ($scope.selectedLink.el1_el2 == "1" && $scope.selectedLink.el2_el1 == "1") {
+            // id du 1 dans 2 et du 2 dans 1
+            var nameProp = ($scope.selectedLinkEl1.name + "_" + $scope.selectedLinkEl2.name).toLowerCase()
+            var a = [nameProp, 'ref', false];
+            $scope.selectedLinkEl1.prop.push(a)
+            $scope.selectedLinkEl2.prop.push(a)
+        }
+
+
+        $timeout(function () {
+            for (var i = 0; i < $scope.phpObject.length; i++) {
+                var current = $scope.phpObject[i];
+                if (current.id == $scope.selectedLink.el1) {
+                    $scope.phpObject[i] = $scope.selectedLinkEl1;
+                } else if (current.id == $scope.selectedLink.el2) {
+                    $scope.phpObject[i] = $scope.selectedLinkEl2
+                }
+            }
+
+            selectedLine = null;
+            $scope.selectedLink = null;
+            $scope.selectedLinkEl1 = null;
+            $scope.selectedLinkEl2 = null;
+            $scope.redrawAll();
+        }, 0)
+
+    }
+    $scope.selectLink = function (id1, id2) {
+        $timeout(function () {
+            for (var i = 0; i < $scope.linkBetweenObject.length; i++) {
+                var current = $scope.linkBetweenObject[i];
+                if (current.el1 == id1 && current.el2 == id2) {
+                    $scope.selectedLink = current;
+                    break;
+                } else if (current.el1 == id2 && current.el2 == id1) {
+                    $scope.selectedLink = current;
+                    break;
+                }
+            }
+
+            for (var i = 0; i < $scope.phpObject.length; i++) {
+                var current = $scope.phpObject[i];
+                if (current.id == $scope.selectedLink.el1) {
+                    $scope.selectedLinkEl1 = current;
+                } else if (current.id == $scope.selectedLink.el2) {
+                    $scope.selectedLinkEl2 = current;
+                }
+            }
+
+            console.log($scope.selectedLink)
+            console.log($scope.selectedLinkEl1)
+            console.log($scope.selectedLinkEl2)
+
+            $('#linkObject').modal('open');
+        }, 0)
+        $timeout(function () {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, {});
+        }, 0)
     }
 });
 socket.on("infoProject", function (data) {
@@ -388,19 +539,21 @@ socket.on("APIObjs", function (data) {
 
 var selectedLine = undefined;
 function selectLine(t) {
-    if (document.getElementById('selectedLine')) {
-        document.getElementById('selectedLine').removeAttribute("id");
-    }
-    t.setAttribute("id", "selectedLine");
+    // if (document.getElementById('selectedLine')) {
+    //     document.getElementById('selectedLine').removeAttribute("id");
+    // }
+    // t.setAttribute("id", "selectedLine");
+
     selectedLine = t.parentNode;
+    var id1 = t.parentNode.attributes['el1'].value;
+    var id2 = t.parentNode.attributes['el2'].value;
+    angular.element(document.getElementById('view')).scope().selectLink(id1, id2);
 }
 
 $(document).keyup(function (e) {
     console.log(e.which);
     if (e.which == 46 && selectedLine) {
-        var id1 = selectedLine.attributes['el1'].value;
-        var id2 = selectedLine.attributes['el2'].value;
         selectedLine.parentNode.removeChild(selectedLine);
-        angular.element(document.getElementById('view')).scope().removeLinkBetweenObject(id1, id2);
+        angular.element(document.getElementById('view')).scope().removeLinkBetweenObject();
     }
 });

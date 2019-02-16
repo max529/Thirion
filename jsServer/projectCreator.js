@@ -76,6 +76,31 @@ module.exports = {
             .replace("nameDB", info.db.name)
         fs.writeFileSync(pathModel + "conn.js", connFile);
 
+        var utilsFile = fs.readFileSync(__dirname + '/../defaultPage/utils.js', 'utf8');
+        fs.writeFileSync(pathModel + "utils.js", utilsFile);
+
+        fs.renameSync(path + 'public/stylesheets', path + 'public/css');
+        fs.renameSync(path + 'public/javascripts', path + 'public/js');
+        fs.renameSync(path + 'public/images', path + 'public/img');
+
+        var layoutFile = fs.readFileSync(__dirname + '/../defaultPage/defaultPug/layout.pug', 'utf8');
+        fs.writeFileSync(path + "views/layout.pug", layoutFile);
+
+        var styleFile = fs.readFileSync(__dirname + '/../defaultPage/defaultcss/style.css', 'utf8');
+        fs.writeFileSync(path + "public/css/style.css", styleFile);
+
+        styleFile = fs.readFileSync(__dirname + '/../defaultPage/defaultcss/materialize.min.css', 'utf8');
+        fs.writeFileSync(path + "public/css/materialize.min.css", styleFile);
+
+        var jqueryFile = fs.readFileSync(__dirname + '/../defaultPage/defaultJs/jquery.min.js', 'utf8');
+        fs.writeFileSync(path + "public/js/jquery.min.js", jqueryFile);
+
+        var materializeFile = fs.readFileSync(__dirname + '/../defaultPage/defaultJs/materialize.min.js', 'utf8');
+        fs.writeFileSync(path + "public/js/materialize.min.js", materializeFile);
+
+        var defaultjsFile = fs.readFileSync(__dirname + '/../defaultPage/defaultJs/default.js', 'utf8');
+        fs.writeFileSync(path + "public/js/default.js", defaultjsFile);
+
         var cmd = path.substring(0, 2) + " && cd " + path + " && npm i --save mysql2 && npm i";
         exec(cmd, function () { })
     },
