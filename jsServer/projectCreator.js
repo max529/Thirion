@@ -69,12 +69,23 @@ module.exports = {
 
         var pathModel = path + "model/";
         var connFile = fs.readFileSync(__dirname + '/../defaultPage/conn.js', 'utf8');
-        connFile = connFile
+        fs.writeFileSync(pathModel + "conn.js", connFile);
+
+        var mssqlFile = fs.readFileSync(__dirname + '/../defaultPage/mssql.js', 'utf8');
+        mssqlFile = mssqlFile
             .replace("hostDB", info.db.host)
             .replace("userDB", info.db.username)
             .replace("passwordDB", info.db.pass)
             .replace("nameDB", info.db.name)
-        fs.writeFileSync(pathModel + "conn.js", connFile);
+        fs.writeFileSync(pathModel + "mssql.js", mssqlFile);
+
+        var mysqlFile = fs.readFileSync(__dirname + '/../defaultPage/mysql.js', 'utf8');
+        mysqlFile = mysqlFile
+            .replace("hostDB", info.db.host)
+            .replace("userDB", info.db.username)
+            .replace("passwordDB", info.db.pass)
+            .replace("nameDB", info.db.name)
+        fs.writeFileSync(pathModel + "mysql.js", mysqlFile);
 
         var utilsFile = fs.readFileSync(__dirname + '/../defaultPage/utils.js', 'utf8');
         fs.writeFileSync(pathModel + "utils.js", utilsFile);
@@ -101,7 +112,7 @@ module.exports = {
         var defaultjsFile = fs.readFileSync(__dirname + '/../defaultPage/defaultJs/default.js', 'utf8');
         fs.writeFileSync(path + "public/js/default.js", defaultjsFile);
 
-        var cmd = path.substring(0, 2) + " && cd " + path + " && npm i --save mysql2 && npm i";
+        var cmd = path.substring(0, 2) + " && cd " + path + " && npm i --save mysql2 && npm i --save tedious && npm i";
         exec(cmd, function () { })
     },
 

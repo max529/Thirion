@@ -99,7 +99,11 @@ var self = module.exports = {
         //suppression de la , finale
         insertProp = insertProp.slice(0, -1);
         insertAskDot = insertAskDot.slice(0, -1);
-        insertVar = insertVar.slice(0, -1) + "]";
+        if (insertVar != '[') {
+            insertVar = insertVar.slice(0, -1) + "]";
+        }else{
+            insertVar = '[]'
+        }
 
         updateProp = updateProp.slice(0, -1);
         updatePropSentence = updatePropSentence.slice(0, -1)
@@ -108,11 +112,19 @@ var self = module.exports = {
 
         deleteProp = deleteProp.slice(0, -1);
         deletePropSentence = deletePropSentence.slice(0, -5);
-        deleteVar = deleteVar.slice(0, -1) + "]";
+        if (deleteVar != '[') {
+            deleteVar = deleteVar.slice(0, -1) + "]";
+        }else{
+            deleteVar = '[]'
+        }
 
         selectByIdProp = selectByIdProp.slice(0, -1);
         selectByIdPropSentence = selectByIdPropSentence.slice(0, -5);
-        selectByIdVar = selectByIdVar.slice(0, -1) + "]"
+        if (selectByIdVar != '[') {
+            selectByIdVar = selectByIdVar.slice(0, -1) + "]";
+        }else{
+            selectByIdVar = '[]'
+        }
 
         //INSERT INTO DefaultClassNameLower(`titreArticle`, `url`, `descr`) VALUES (:titre,:url,:descr)
         var insertSentence = "INSERT INTO " + classNameLower + "(" + insertProp + ") VALUES (" + insertAskDot + ")";
