@@ -70,7 +70,6 @@ module.exports = {
         var pathModel = path + "model/";
         var connFile = fs.readFileSync(__dirname + '/../defaultPage/conn.js', 'utf8');
         fs.writeFileSync(pathModel + "conn.js", connFile);
-
         var mssqlFile = fs.readFileSync(__dirname + '/../defaultPage/mssql.js', 'utf8');
         mssqlFile = mssqlFile
             .replace("hostDB", info.db.host)
